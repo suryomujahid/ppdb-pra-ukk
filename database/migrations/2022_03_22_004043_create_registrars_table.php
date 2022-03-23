@@ -21,6 +21,7 @@ class CreateRegistrarsTable extends Migration
             $table->string('religion');
             $table->string('asal_smp');
             $table->string('major');
+            $table->string('photo')->nullable();
             $table->timestamps();
         });
     }

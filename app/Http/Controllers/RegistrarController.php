@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Registrar;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
+
 
 class RegistrarController extends Controller
 {
     public function index()
     {
-        $registrars = Registrar::orderBy('created_at', 'ASC');
+        $registrars = Registrar::orderBy('created_at', 'DESC');
         $registrars = $registrars->simplePaginate(99)->toArray()['data'];
+        foreach ($registrars as $key => $val) {
+            $registrars[$key]['created_at'] = Carbon::create($registrars[$key]['created_at'])->toDateTimeString();
+        }
 
         return view('dashboard', compact('registrars'));
     }
@@ -26,6 +32,12 @@ class RegistrarController extends Controller
         $registrar->religion = $request->religion;
         $registrar->asal_smp = $request->asal_smp;
         $registrar->major = $request->major;
+
+        if (isset($request->photo)) {
+            $request->photo = $request->photo->store('public/foto');
+            $request->photo = str_replace('public/', '', $request->photo);
+            $registrar->photo = $request->photo;
+        }
 
         $request->validate([
             'full_name' => 'required|string',
@@ -58,6 +70,12 @@ class RegistrarController extends Controller
         $registrar->religion = $request->religion;
         $registrar->asal_smp = $request->asal_smp;
         $registrar->major = $request->major;
+        if (isset($request->photo)) {
+            Storage::delete('public/'.$request->photo);
+            $request->photo = $request->photo->store('public/foto');
+            $request->photo = str_replace('public/', '', $request->photo);
+            $registrar->photo = $request->photo;
+        }
 
         $request->validate([
             'full_name' => 'required|string',
@@ -70,7 +88,7 @@ class RegistrarController extends Controller
 
         $registrar->save();
 
-        return redirect()->back()->with('success', 'Berhasil memperbarui');
+        return redirect()->back()->with('success', 'Berhasil memperbarui data');
     }
 
     public function delete($id)

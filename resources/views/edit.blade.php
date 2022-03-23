@@ -3,7 +3,7 @@
 @section('content')
     <h4>Data {{$registrar['full_name']}}</h4>
     <hr>
-    <form action="{{route('registrar.update', $registrar['id'])}}" method="post">
+    <form action="{{route('registrar.update', $registrar['id'])}}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
         @if (session('success'))
@@ -96,6 +96,14 @@
                     @endforeach
                 </select>
             </div>
+        </div>
+        <div class="mb-3">
+            <label class="block" for="photo">Unggah Foto</label>
+            <div class="mb-2">
+                <img id="photo-img" class="mx-auto" src="{{ asset('storage/'.$registrar['photo'])}}" alt="" srcset="" style="width:10rem;height:10rem">
+            </div>
+            <input onchange="document.getElementById('photo-img').src = window.URL.createObjectURL(this.files[0])"
+            accept=".jpg, .jpeg, .png" class="block" id="photo" type="file" name="photo">
         </div>
         <button type="submit" class="btn btn-primary">Ubah</button>
         <a href="{{route('registrar.index')}}" class="btn btn-warning">Kembali</a>

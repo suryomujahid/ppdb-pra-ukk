@@ -4,7 +4,7 @@
     <h2>SMK Semangat 45</h2>
     <h4>Penerimaan Peserta Didik Baru</h4>
     <hr>
-    <form action="{{route('registrar.create')}}" method="post">
+    <form action="{{route('registrar.create')}}" method="post" enctype="multipart/form-data">
         @csrf
         @method('POST')
         @if (session('success'))
@@ -91,6 +91,14 @@
                     @endforeach
                 </select>
             </div>
+        </div>
+        <div class="mb-3">
+            <label class="block" for="photo">Unggah Foto</label>
+            <div class="mb-2">
+                <img id="photo-img" class="mx-auto" src="" alt="" srcset="" style="width:10rem;height:10rem">
+            </div>
+            <input onchange="document.getElementById('photo-img').src = window.URL.createObjectURL(this.files[0])"
+            accept=".jpg, .jpeg, .png" class="block" id="photo" type="file" name="photo">
         </div>
         <button type="submit" class="btn btn-primary">Daftar</button>
     </form>

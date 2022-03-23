@@ -12,6 +12,7 @@
         <h4>Penerimaan Peserta Didik Baru</h4>
         <hr>
         <div class="m-auto">
+            <img src="{{ asset('storage/'.$registrar['photo'])}}" alt="" srcset="" style="width:5rem;height:5rem">
             <p>Nomor Daftar: {{$registrar['id']}}</p>
             <p>Jenis kelamin: {{$registrar['gender']}}</p>
             <p>Alamat: {{$registrar['address']}}</p>
