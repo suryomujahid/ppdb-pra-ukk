@@ -24,33 +24,37 @@ class RegistrarController extends Controller
 
     public function create(Request $request)
     {
-        $registrar = new Registrar;
+        try {
+            $registrar = new Registrar;
 
-        $registrar->full_name = $request->full_name;
-        $registrar->gender = $request->gender;
-        $registrar->address = $request->address;
-        $registrar->religion = $request->religion;
-        $registrar->asal_smp = $request->asal_smp;
-        $registrar->major = $request->major;
+            $registrar->full_name = $request->full_name;
+            $registrar->gender = $request->gender;
+            $registrar->address = $request->address;
+            $registrar->religion = $request->religion;
+            $registrar->asal_smp = $request->asal_smp;
+            $registrar->major = $request->major;
 
-        if (isset($request->photo)) {
-            $request->photo = $request->photo->store('public/foto');
-            $request->photo = str_replace('public/', '', $request->photo);
-            $registrar->photo = $request->photo;
+            if (isset($request->photo)) {
+                $request->photo = $request->photo->store('public/foto');
+                $request->photo = str_replace('public/', '', $request->photo);
+                $registrar->photo = $request->photo;
+            }
+
+            $request->validate([
+                'full_name' => 'required|string',
+                'gender' => ['required', Rule::in(config('constant.registrar.gender'))],
+                'address' => 'required|string',
+                'religion' => ['required', Rule::in(config('constant.registrar.religion'))],
+                'asal_smp' => 'required|string',
+                'major' => ['required', Rule::in(config('constant.registrar.major'))],
+            ]);
+
+            $registrar->save();
+
+            return redirect()->back()->with('success', 'Berhasil mendaftar');
+        } catch (Exception $e) {
+            return("Error")
         }
-
-        $request->validate([
-            'full_name' => 'required|string',
-            'gender' => ['required', Rule::in(config('constant.registrar.gender'))],
-            'address' => 'required|string',
-            'religion' => ['required', Rule::in(config('constant.registrar.religion'))],
-            'asal_smp' => 'required|string',
-            'major' => ['required', Rule::in(config('constant.registrar.major'))],
-        ]);
-
-        $registrar->save();
-
-        return redirect()->back()->with('success', 'Berhasil mendaftar');
     }
 
     public function detail($id)
